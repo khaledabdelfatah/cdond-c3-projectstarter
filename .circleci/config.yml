@@ -330,6 +330,31 @@ jobs:
       - destroy-environment
       - revert-migrations
 
+
+  cloudfront-update:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Save Old Workflow ID
+          command: |
+            export OLD_CIRCLE_WORKFLOW_ID=$(aws cloudformation list-exports \
+                --query "Exports[?Name=='WorkflowID'].Value" --output text)
+            echo OLD_CIRCLE_WORKFLOW_ID = "${OLD_CIRCLE_WORKFLOW_ID}"
+            curl -k https://kvdb.io/Jwnr1eGwZcV3YiHCgGhyq6/old_workflow_id -d "${OLD_CIRCLE_WORKFLOW_ID}"
+      - run:
+          name: Update cloudfront distribution
+          command: |
+            aws cloudformation deploy \
+            --template-file .circleci/files/cloudfront.yml \
+            --stack-name InitialStack \
+            --parameter-overrides WorkflowID=${CIRCLE_WORKFLOW_ID:0:7} \
+            --tags project=udapeople
+      - destroy-environment
+      - revert-migrations
+
+
 workflows:
   default:
     jobs:
@@ -355,3 +380,5 @@ workflows:
           requires: [run-migrations]
       - smoke-test:
           requires: [deploy-backend, deploy-frontend]
+      - cloudfront-update:
+          requires: [smoke-test]          
