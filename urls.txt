@@ -1,0 +1,4 @@
+https://github.com/khaledabdelfatah/cdond-c3-projectstarter
+d39s9lkdl2bcta.cloudfront.net	
+http://54.175.58.133:3030/api/Employees
+http://udapeople-08a5086.s3-website-us-east-1.amazonaws.com/
