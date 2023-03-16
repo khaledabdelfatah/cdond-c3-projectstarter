@@ -347,7 +347,7 @@ jobs:
       - run:
           name: Frontend smoke test.
           command: |
-            export URL="http://udapeople-${CIRCLfE_WORKFLOW_ID:0:7}.s3-website-${AWS_DEFAULT_REGION}.amazonaws.com/#/employees"            
+            export URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-${AWS_DEFAULT_REGION}.amazonaws.com/#/employees"            
             echo $URL
             if curl ${URL} | grep "Welcome"; then return 0; else return 1; fi
       - destroy-environment
@@ -393,9 +393,9 @@ workflows:
           requires: [build-frontend]          
       - deploy-infrastructure:
           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-      #     filters: 
-      #       branches:
-      #         only: [main] 
+          # filters: 
+          #   branches:
+          #     only: [main] 
       - configure-infrastructure:
           requires: [deploy-infrastructure]
       - run-migrations:
